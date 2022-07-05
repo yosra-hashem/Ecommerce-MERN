@@ -5,8 +5,6 @@ const Order = require("../models/orderModel.js");
 // @route POST /api/orders
 // @access Private
 const addOrderItems = asyncHandler(async (req, res) => {
-  console.log(req.user);
-
   const {
     orderItems,
     shippingAddress,
@@ -54,7 +52,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // @desc update order to paid
-// @route update /api/orders/:id/pay
+// @route PUT /api/orders/:id/pay
 // @access Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
@@ -65,7 +63,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
       id: req.body.id,
       status: req.body.status,
       update_time: req.body.update_time,
-      email_address: req.body.payer.email_address,
+      email_adress: req.body.payer.email_adress,
     };
 
     const updatedOrder = await order.save();
@@ -77,8 +75,8 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 });
 
 // @desc update order to delivered
-// @route update /api/orders/:id/deliver
-// @access Private
+// @route PUT /api/orders/:id/deliver
+// @access Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
   if (order) {
@@ -106,7 +104,7 @@ const GetMyOrders = asyncHandler(async (req, res) => {
 });
 
 // @desc get orders
-// @route GET /api/admin/orders
+// @route GET /api/orders
 // @access Private/admin
 const GetOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({}).populate("user", "id name");
