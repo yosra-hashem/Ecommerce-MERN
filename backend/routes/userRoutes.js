@@ -24,7 +24,7 @@ router.post("/login", requestsLimiter, authUser);
 
 router.route("/forgotpassword").post(protect, forgotPassword);
 
-router.route("/passwordreset/:resetToken").put(protect, resetPassword);
+router.route("/passwordreset/:resetToken").put(resetPassword);
 
 router
   .route("/profile")
