@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken.js");
+const crypto = require("crypto");
 const User = require("../models/userModel.js");
 const sendEmail = require("../services/sendEmail");
 
@@ -45,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    // HTML Message
+    // text Message
     const message = `
       Welcome ${user.name}
       Thank you for registration
@@ -64,7 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
-      email: "Email Sent",
+      emailWelcome: "Email Sent",
     });
   } else {
     res.status(400);
@@ -92,7 +93,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 });
 
 // @desc Update user profile
-// @route PUT /api/users/profile
+// @route PUT /api/users/:id
 // @access Private
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
@@ -179,7 +180,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 // @desc Forget password User
-// @route DELETE /api/users/forgetpassword
+// @route POST /api/users/forgetpassword
 // @access Private
 const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
@@ -200,7 +201,7 @@ const forgotPassword = async (req, res, next) => {
     // Create reset url to email to provided email
     const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
 
-    // HTML Message
+    // Text Message
     const message = `
       You have requested a password reset
       Please make a put request to the following link
@@ -231,15 +232,16 @@ const forgotPassword = async (req, res, next) => {
 };
 
 // @desc Reset password User
-// @route DELETE /api/users/resetpassword
+// @route PUT /api/users/resetpassword
 // @access Private
 const resetPassword = async (req, res, next) => {
   // Compare token in URL params to hashed token
-  const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(req.params.resetToken)
-    .digest("hex");
-
+  // const resetPasswordToken = crypto
+  //   .createHash("sha256")
+  //   .update(req.params.resetToken)
+  //   .digest("hex");
+  // console.log(resetPasswordToken);
+  const resetPasswordToken = req.params.resetToken;
   try {
     const user = await User.findOne({
       resetPasswordToken,
@@ -260,7 +262,7 @@ const resetPassword = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: "Password Updated Success",
-      token: user.generateToken(),
+      token: generateToken(user._id),
     });
   } catch (err) {
     next(err);
