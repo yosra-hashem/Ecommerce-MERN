@@ -28,7 +28,9 @@ An ecommerce store built with MERN stack, and utilizes third party API's. This e
 
 ## ▶️ Demo
 
-This application is deployed on Heroku. Please check it out: [here](https://mern-mlhy.herokuapp.com/)
+### Heroku
+
+Please check it out live website: [here](https://mern-mlhy.herokuapp.com/)
 
 ---
 
